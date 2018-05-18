@@ -61,6 +61,7 @@ import org.ligoj.app.plugin.id.resource.UserOrgResource;
 import org.ligoj.app.resource.ActivitiesProvider;
 import org.ligoj.app.resource.ServicePluginLocator;
 import org.ligoj.app.resource.plugin.AbstractToolPluginResource;
+import org.ligoj.app.resource.subscription.SubscriptionResource;
 import org.ligoj.bootstrap.core.INamableBean;
 import org.ligoj.bootstrap.core.NamedBean;
 import org.ligoj.bootstrap.core.SpringUtils;
@@ -219,6 +220,9 @@ public class LdapPluginResource extends AbstractToolPluginResource
 
 	@Autowired
 	protected ServicePluginLocator servicePluginLocator;
+
+	@Autowired
+	protected SubscriptionResource subscriptionResource;
 
 	@Autowired
 	protected LdapPluginResource self;
@@ -662,6 +666,15 @@ public class LdapPluginResource extends AbstractToolPluginResource
 		}
 
 		return result;
+	}
+
+	@GET
+	@Path("group/{project}")
+	public Collection<Subscription> getGroupSubscriptions(@PathParam("node") final String node,
+			@PathParam("project") final int project) {
+		subscriptionResource.getSubscriptionsWithParameterValues(node, project);
+		// extract ldap groups
+		return null;
 	}
 
 	/**
