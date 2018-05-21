@@ -193,6 +193,11 @@ public class LdapPluginResource extends AbstractToolPluginResource
 	public static final String PARAMETER_CLEAR_PASSWORD = KEY + ":clear-password";
 
 	/**
+	 * The LDAP service node id
+	 */
+	public static final String LDAP_NODE_ID = "service:id:ldap";
+
+	/**
 	 * Lock object used to synchronize the creation.
 	 */
 	private static final Object USER_LOCK = new Object();
@@ -670,9 +675,14 @@ public class LdapPluginResource extends AbstractToolPluginResource
 
 	@GET
 	@Path("group/{project}")
-	public Collection<Subscription> getGroupSubscriptions(@PathParam("node") final String node,
-			@PathParam("project") final int project) {
-		subscriptionResource.getSubscriptionsWithParameterValues(node, project);
+	public List<INamableBean<String>> getGroupSubscriptions(@PathParam("project") final int project) {
+		List<Object[]> groupSubscriptions = subscriptionResource.getSubscriptionsWithParameterValues(LDAP_NODE_ID,
+				project);
+
+		for (final Object[] groupSubscription : groupSubscriptions) {
+			System.out.println(groupSubscription);
+		}
+
 		// extract ldap groups
 		return null;
 	}
