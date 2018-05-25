@@ -674,7 +674,8 @@ public class LdapPluginResource extends AbstractToolPluginResource
 	}
 
 	@GET
-	@Path("group/{project}")
+	@Path("group/subscriptions/{project}")
+	@Consumes(MediaType.APPLICATION_JSON)
 	public List<INamableBean<String>> getGroupSubscriptions(@PathParam("project") final int project) {
 		List<Object[]> groupSubscriptions = subscriptionResource.getSubscriptionsWithParameterValues(LDAP_NODE_ID,
 				project);
