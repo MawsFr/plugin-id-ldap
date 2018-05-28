@@ -43,6 +43,7 @@ import org.ligoj.app.iam.UserOrg;
 import org.ligoj.app.model.CacheProjectGroup;
 import org.ligoj.app.model.ContainerType;
 import org.ligoj.app.model.Node;
+import org.ligoj.app.model.ParameterValue;
 import org.ligoj.app.model.Project;
 import org.ligoj.app.model.Subscription;
 import org.ligoj.app.plugin.id.ldap.dao.CompanyLdapRepository;
@@ -674,18 +675,29 @@ public class LdapPluginResource extends AbstractToolPluginResource
 	}
 
 	@GET
-	@Path("group/subscriptions/{project}")
+	@Path("group/subscriptions/{project}/{node}/{criteria}")
 	@Consumes(MediaType.APPLICATION_JSON)
-	public List<INamableBean<String>> getGroupSubscriptions(@PathParam("project") final int project) {
-		List<Object[]> groupSubscriptions = subscriptionResource.getSubscriptionsWithParameterValues(LDAP_NODE_ID,
-				project);
+	public List<INamableBean<Integer>> getGroupSubscriptions(@PathParam("project") final int project,
+			@PathParam("node") final String node, @PathParam("criteria") final String criteria) {
+		List<Object[]> groupSubscriptions = subscriptionResource.getSubscriptionsWithParameterValues(node,
+				IdentityResource.PARAMETER_GROUP, project);
+
+		final List<INamableBean<Integer>> result = new ArrayList<>();
+		final String criteriaClean = Normalizer.normalize(criteria);
 
 		for (final Object[] groupSubscription : groupSubscriptions) {
-			System.out.println(groupSubscription);
+			Subscription s = (Subscription) groupSubscription[0];
+			ParameterValue p = (ParameterValue) groupSubscription[1];
+			System.out.println(s);
+			System.out.println(p);
+			final INamableBean<Integer> bean = new NamedBean<>();
+			bean.setId(p.getId());
+			bean.setName(p.getData());
+			result.add(bean);
 		}
 
 		// extract ldap groups
-		return null;
+		return result;
 	}
 
 	/**
