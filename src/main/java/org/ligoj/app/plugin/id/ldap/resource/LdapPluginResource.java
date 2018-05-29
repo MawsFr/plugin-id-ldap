@@ -679,17 +679,13 @@ public class LdapPluginResource extends AbstractToolPluginResource
 	@Consumes(MediaType.APPLICATION_JSON)
 	public List<INamableBean<Integer>> getGroupSubscriptions(@PathParam("project") final int project,
 			@PathParam("node") final String node, @PathParam("criteria") final String criteria) {
-		List<Object[]> groupSubscriptions = subscriptionResource.getSubscriptionsWithParameterValues(node,
-				IdentityResource.PARAMETER_GROUP, project);
+		final String criteriaClean = Normalizer.normalize(criteria);
+		List<Object[]> groupSubscriptions = subscriptionResource.getSubscriptionsWithParameterValues(project,
+				IdentityResource.PARAMETER_GROUP, node, criteriaClean);
 
 		final List<INamableBean<Integer>> result = new ArrayList<>();
-		final String criteriaClean = Normalizer.normalize(criteria);
-
 		for (final Object[] groupSubscription : groupSubscriptions) {
-			Subscription s = (Subscription) groupSubscription[0];
 			ParameterValue p = (ParameterValue) groupSubscription[1];
-			System.out.println(s);
-			System.out.println(p);
 			final INamableBean<Integer> bean = new NamedBean<>();
 			bean.setId(p.getId());
 			bean.setName(p.getData());
