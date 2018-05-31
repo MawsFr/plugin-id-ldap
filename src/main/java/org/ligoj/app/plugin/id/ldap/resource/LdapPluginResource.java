@@ -674,25 +674,35 @@ public class LdapPluginResource extends AbstractToolPluginResource
 		return result;
 	}
 
+	/**
+	 * Returns a project's ldap groups subscription list with given criteria
+	 * 
+	 * @param project
+	 *            The id of the project
+	 * @param node
+	 *            The node where the query has been made
+	 * @param criteria
+	 *            The input of the user
+	 * @return A list of ldap groups to which the project has subscribed
+	 */
 	@GET
 	@Path("group/subscriptions/{project}/{node}/{criteria}")
 	@Consumes(MediaType.APPLICATION_JSON)
-	public List<INamableBean<Integer>> getGroupSubscriptions(@PathParam("project") final int project,
+	public List<INamableBean<String>> getGroupSubscriptions(@PathParam("project") final int project,
 			@PathParam("node") final String node, @PathParam("criteria") final String criteria) {
 		final String criteriaClean = Normalizer.normalize(criteria);
 		List<Object[]> groupSubscriptions = subscriptionResource.getSubscriptionsWithParameterValues(project,
-				IdentityResource.PARAMETER_GROUP, node, criteriaClean);
+				IdentityResource.PARAMETER_GROUP, LDAP_NODE_ID, criteriaClean);
 
-		final List<INamableBean<Integer>> result = new ArrayList<>();
+		final List<INamableBean<String>> result = new ArrayList<>();
 		for (final Object[] groupSubscription : groupSubscriptions) {
 			ParameterValue p = (ParameterValue) groupSubscription[1];
-			final INamableBean<Integer> bean = new NamedBean<>();
-			bean.setId(p.getId());
+			final INamableBean<String> bean = new NamedBean<>();
+			bean.setId(p.getData());
 			bean.setName(p.getData());
 			result.add(bean);
 		}
 
-		// extract ldap groups
 		return result;
 	}
 
