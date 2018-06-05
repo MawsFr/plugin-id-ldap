@@ -682,7 +682,7 @@ public class LdapPluginResource extends AbstractToolPluginResource
 	 * @param node
 	 *            The node where the query has been made
 	 * @param criteria
-	 *            The input of the user
+	 *            The input of the user corresponding to the name of the searched ldap group
 	 * @return A list of ldap groups to which the project has subscribed
 	 */
 	@GET
