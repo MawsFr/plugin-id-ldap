@@ -863,4 +863,27 @@ public class LdapPluginResourceTest extends AbstractLdapPluginResourceTest {
 			resource.newApplicationUser(user);
 		});
 	}
+
+	@Test
+	public void getGroupSubscriptions() {
+		final int projectId = projectRepository.findByName("gStack").getId();
+		List<INamableBean<String>> groups = resource.getGroupSubscriptions(projectId, "", "");
+		Assertions.assertEquals(2, groups.size());
+		INamableBean<String> group = groups.get(0);
+		Assertions.assertEquals("gfi-gstack", group.getId());
+		Assertions.assertEquals("gfi-gstack", group.getName());
+
+		group = groups.get(1);
+		Assertions.assertEquals("broken", group.getId());
+		Assertions.assertEquals("broken", group.getName());
+
+		groups = resource.getGroupSubscriptions(projectId, "", "gf");
+		Assertions.assertEquals(1, groups.size());
+		group = groups.get(0);
+		Assertions.assertEquals("gfi-gstack", group.getId());
+		Assertions.assertEquals("gfi-gstack", group.getName());
+
+		groups = resource.getGroupSubscriptions(projectId, "", "hello");
+		Assertions.assertEquals(0, groups.size());
+	}
 }
